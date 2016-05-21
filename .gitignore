@@ -1,7 +1,6 @@
 .DS_Store
 node_modules/
 dist/
-static/static/static/
 npm-debug.log
 selenium-debug.log
 test/unit/coverage
