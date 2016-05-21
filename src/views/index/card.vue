@@ -33,16 +33,6 @@
     .card-item.no-img {
         padding: 1rem;
     }
-    .card-list .card-item {
-        width: 100%;
-        padding: 1rem 1rem 1rem 9rem;
-    }
-    .card-list .card-preview {
-        left: 0;
-        right: inherit;
-        width: 7rem;
-        height: 7rem;
-    }
     .card-list .card-item.no-img {
         padding: 1rem;
     }
@@ -59,8 +49,16 @@
             min-height: inherit;
         }
         .card-list .card-item {
+            width: 100%;
+            padding: 1rem 1rem 1rem 9rem;
             height: 7rem;
             overflow: hidden;
+        }
+        .card-list .card-preview {
+            left: 0;
+            right: inherit;
+            width: 7rem;
+            height: 7rem;
         }
     }
 </style>
