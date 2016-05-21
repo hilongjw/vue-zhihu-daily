@@ -33,17 +33,17 @@
     @media all and (max-width: 768px) {
         .list-item {
             width: 100%;
-            padding: 0 6rem 0 0;
+            padding: 1rem 6rem 1rem .5rem;
             box-sizing: border-box;
             margin: .5rem 0;
         }
         .item-preview {
             position: absolute;
-            width: 4rem;
-            right: 1.5rem;
+            width: 6rem;
+            right: .5rem;
             top: .5rem;
             left: inherit;
-            height: 4rem;
+            height: 6rem;
         }
     }
 </style>

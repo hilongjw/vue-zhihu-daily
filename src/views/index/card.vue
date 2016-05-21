@@ -9,6 +9,7 @@
         margin: .5rem;
         text-align: left;
         vertical-align: text-top;
+        min-height: 21rem;
     }
     .card-preview {
         position: absolute;
@@ -20,11 +21,9 @@
     }
     .card-title {
         font-size: 1.6rem;
-        height: 4rem;
-        padding: .5rem;
+        padding: .5rem 0;
         margin: 0;
         line-height: 1.6;
-        overflow: hidden;
     }
     .card-description {
         text-align: left;
@@ -56,7 +55,12 @@
     @media all and (max-width: 768px) {
         .card-item {
             width: 100%;
-            margin: 0;
+            margin: 1rem 0;
+            min-height: inherit;
+        }
+        .card-list .card-item {
+            height: 7rem;
+            overflow: hidden;
         }
     }
 </style>

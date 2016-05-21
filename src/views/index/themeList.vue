@@ -8,13 +8,13 @@
     }
     @media all and (max-width: 768px) {
         .card-list {
-            padding-top: 1rem;
+            padding-top: 0rem;
         }
     }
 </style>
 
 <template>
-    <section class="zhi-list">
+    <section class="card-list">
         <cov-card :data="data" v-for="data in list"></cov-card>  
     </section>
 </template>

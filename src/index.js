@@ -8,32 +8,14 @@ import { sync } from 'vuex-router-sync'
 import App from './views/app'
 import store from './vuex/index/store'
 import router from './router/index'
+import CovLocalDB from './util'
 
 Vue.use(VueProgressbar)
 Vue.use(VueResource)
 Vue.use(VueRouter)
 Vue.use(Vuex)
 
-let localStorage = window.localStorage
-let IMG_MAP = {
-    data: {},
-    init () {
-        if (localStorage['vue-zhihu-img']) {
-            this.data = JSON.parse(localStorage['vue-zhihu-img'])
-        }
-    },
-    set (uri, data) {
-        this.data[uri] = data
-        localStorage['vue-zhihu-img'] = JSON.stringify(this.data)
-    },
-    get (uri) {
-        if (this.data[uri]) {
-            return this.data[uri]
-        }
-        return false
-    }
-}
-IMG_MAP.init()
+const IMG_MAP = new CovLocalDB('vue-zhihu-img')
 
 Vue.prototype.$preImg = (uri) => {
     if (IMG_MAP[uri]) {
@@ -65,7 +47,7 @@ Vue.prototype.$Api = (url) => {
     return 'readapi?uri=' + url
 }
 
-Vue.config.debug = true
+Vue.config.debug = process.env.NODE_ENV === 'dev'
 
 sync(store, router)
 

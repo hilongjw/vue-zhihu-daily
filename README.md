@@ -6,7 +6,7 @@
  ![Preview](http://ac-9xUJPYdR.clouddn.com/7326251de8caf34ea2d1.gif)
 
 ## Live demo
- [link](http://zhihu.bood.in)
+ [live demo link](http://zhihu.bood.in)
 
 ## Usage
 
