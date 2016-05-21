@@ -1,0 +1,109 @@
+<style>
+    .card-item {
+        display: inline-block;
+        position: relative;
+        box-sizing: border-box;
+        background-color: #fff;
+        width: 18.5rem;
+        padding: 14rem 1rem 1rem 1rem;
+        margin: .5rem;
+        text-align: left;
+        vertical-align: text-top;
+    }
+    .card-preview {
+        position: absolute;
+        height: 14rem;
+        width: 100%;
+        top: 0;
+        left: 0;
+        background-size: cover;
+    }
+    .card-title {
+        font-size: 1.6rem;
+        height: 4rem;
+        padding: .5rem;
+        margin: 0;
+        line-height: 1.6;
+        overflow: hidden;
+    }
+    .card-description {
+        text-align: left;
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+    .card-item.no-img {
+        padding: 1rem;
+    }
+    .card-list .card-item {
+        width: 100%;
+        padding: 1rem 1rem 1rem 9rem;
+    }
+    .card-list .card-preview {
+        left: 0;
+        right: inherit;
+        width: 7rem;
+        height: 7rem;
+    }
+    .card-list .card-item.no-img {
+        padding: 1rem;
+    }
+    .card-list .card-item.no-img .card-title{
+        height: inherit;
+    }
+    .card-list .card-item.no-img .card-preview {
+        display: none;
+    }
+    @media all and (max-width: 768px) {
+        .card-item {
+            width: 100%;
+            margin: 0;
+        }
+    }
+</style>
+
+<template>
+    <article class="card-item" v-link="{'name': 'news', params: {id: data.id}}" :class="{'no-img': cloudSrc === 'waiting'}">
+        <div class="card-preview" :style="{'background-image': 'url('+ cloudSrc +')'}"></div>
+        <p class="card-title">{{data.name}}</p>
+        <p class="card-description">{{data.description}}</p>
+    </article>
+</template>
+
+<script>
+    export default {
+        props: {
+            data: {
+                type: Object,
+                required: true
+            }
+        },
+        data () {
+            return {
+                cloudSrc: 'waiting'
+            }
+        },
+        created () {
+            if (this.data.img) {
+                this.$covImg(this, this.data.img, cloudSrc => {
+                    this.cloudSrc = cloudSrc
+                })
+            }
+        },
+        methods: {
+            imgCloud (uri, callback) {
+                let data = window.btoa(uri.split('').reverse().join(''))
+                this.$http.get('http://127.0.0.1:88/imagebox?type=rev-64&data=' + data)
+                    .then(response => {
+                        if (response.data.code === 200) {
+                            callback(response.data.data.url)
+                        } else {
+                            console.log(response.data.message)
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+            }
+        }
+    }
+</script>
