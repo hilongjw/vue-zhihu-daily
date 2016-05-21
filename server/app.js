@@ -14,10 +14,10 @@ app.use(function(req, res, next) {
     })
     next()
 })
-app.use(express.static('../public'));
+app.use(express.static(__dirname + '/public'));
 
 // APIS
-app.get('/', (req, res) => {res.sendFile('../public/index.html')})
+app.get('/', (req, res) => {res.sendFile(__dirname + '/public/index.html')})
 app.get('/imagebox', imagebox.upload)
 app.get('/readapi', api.requestApi)
 
