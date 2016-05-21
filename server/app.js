@@ -17,9 +17,10 @@ app.use(function(req, res, next) {
 app.use(express.static(__dirname + '/public'));
 
 // APIS
-app.get('/', (req, res) => {res.sendFile(__dirname + '/public/index.html')})
 app.get('/imagebox', imagebox.upload)
 app.get('/readapi', api.requestApi)
+app.get('*', (req, res) => {res.sendFile(__dirname + '/public/index.html')})
+
 
 app.listen(80, () => {
     console.log(`app is listening at port:80`)

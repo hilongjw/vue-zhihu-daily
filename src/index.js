@@ -28,7 +28,7 @@ Vue.prototype.$covImg = (self, uri, callback) => {
     }
 
     let data = window.btoa(uri.split('').reverse().join(''))
-    self.$http.get('imagebox?type=rev-64&data=' + data)
+    self.$http.get(window.location.origin + '/imagebox?type=rev-64&data=' + data)
         .then(response => {
             if (response.data.code === 200) {
                 IMG_MAP.set(uri, response.data.data.url)
@@ -44,7 +44,7 @@ Vue.prototype.$covImg = (self, uri, callback) => {
 }
 
 Vue.prototype.$Api = (url) => {
-    return 'readapi?uri=' + url
+    return window.location.origin + '/readapi?uri=' + url
 }
 
 Vue.config.debug = process.env.NODE_ENV === 'dev'
