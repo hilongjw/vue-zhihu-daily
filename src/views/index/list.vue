@@ -51,13 +51,14 @@ export default {
         dataPointerCalc (plus) {
             if (!this.datePointer.value) {
                 this.setDatePointer(new Date())
+                this.fetchList()
             } else {
                 if (plus) {
                     let nextDay = new Date(this.datePointer.format)
                     this.setDatePointer(new Date(nextDay - 86400000))
+                    this.fetchList()
                 }
             }
-            this.fetchList()
         },
         fetchList () {
             this.$http.get(this.$Api('http://news.at.zhihu.com/api/4/news/before/' + this.datePointer.value))
