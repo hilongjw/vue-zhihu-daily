@@ -103,6 +103,30 @@ const download = function (uri) {
     return promise
 }
 
+const HashTable = {
+    data: {},
+    set (key, val) {
+        if (Object.keys(this.data).length > 1000) {
+            this.refresh()
+        }
+        this.data[key] = val
+    },
+    get (key) {
+        if (this.data[key]) {
+            return this.data[key]
+        }
+        return null
+    },
+    refresh () {
+        let keys = Object.keys(this.data)
+        let len = keys.length
+        while (len) {
+            len--
+            delete this.data[keys[len]]
+        }
+    }
+}
+
 module.exports.upload = function(req, res) {
     let type = req.query.type
     let uri
@@ -120,41 +144,54 @@ module.exports.upload = function(req, res) {
         default:
             uri = req.query.data.split('').reverse().join('')
     }
-
-    let query = new AV.Query('_File')
-    query
-        .equalTo('name', uri)
-        .first()
-        .then(file => {
-            if(file) {
-                return res.send({
-                    code: 200,
-                    data: {
-                        url: file.get('url'),
-                        id: file.id
-                    }
-                })
-            } else {
-                download(uri)
-                .then(function (filename, data) {
-                    let file = new AV.File(uri, data.read())
-                    return file.save()
-                })
-                .then(function(obj) {
+    if (HashTable.get(uri)) {
+        console.log('from hash')
+        return res.send({
+            code: 200,
+            data: {
+                url: HashTable.get(uri)
+            }
+        })
+    } else {
+        console.log('not yet')
+        let query = new AV.Query('_File')
+        query
+            .equalTo('name', uri)
+            .first()
+            .then(file => {
+                if(file) {
+                    HashTable.set(uri, file.get('url'))
                     return res.send({
                         code: 200,
                         data: {
-                            url: obj.url(),
-                            id: obj.id
+                            url: file.get('url'),
+                            id: file.id
                         }
-                    }).end()
-                })
-                .catch(function (err) {
-                    return res.send(ERROR_CODE[1]).end()
-                })
-            }
-        })
-        .catch(function (err) {
-            res.send(ERROR_CODE[1])
-        })
+                    })
+                } else {
+                    download(uri)
+                    .then(function (filename, data) {
+                        let file = new AV.File(uri, data.read())
+                        return file.save()
+                    })
+                    .then(function(obj) {
+                        HashTable.set(uri, obj.url())
+                        return res.send({
+                            code: 200,
+                            data: {
+                                url: obj.url(),
+                                id: obj.id
+                            }
+                        }).end()
+                    })
+                    .catch(function (err) {
+                        return res.send(ERROR_CODE[1]).end()
+                    })
+                }
+            })
+            .catch(function (err) {
+                res.send(ERROR_CODE[1])
+            })
+    }
+    
 }
