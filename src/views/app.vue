@@ -87,7 +87,7 @@ export default {
                         width: '8px',
                         transform: `translateX(${x}px)`
                     }
-                    after().bind(this)
+                    after()
                 }, 100)
             })
         }
@@ -98,7 +98,7 @@ export default {
 <style>
     html {
         font-size: 62.5%;
-        font-family: 'Helvetica Neue',"微软雅黑";
+        font-family: Hiragino Sans GB,Helvetica,Arial,STHeiti,WenQuanYi Micro Hei,sans-serif;
     }
     * {
         padding: 0;
