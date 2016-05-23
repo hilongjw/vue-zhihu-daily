@@ -6,7 +6,9 @@ const https        = require('https')
 const fs           = require('fs')
 const Stream       = require('stream').Transform
 const request      = require('request')
+const HashTable    = require('../util').HashTable
 
+const hashTable = new HashTable(1000)
 const ERROR_CODE = {
     1: {
         code: 1,
@@ -63,11 +65,16 @@ const readAPI = function (uri) {
 
 module.exports.requestApi = function(req, res) {
     let uri = req.query.uri
-
-    readAPI(uri)
-        .then(data => {
-            res.send(data).end()
-        })
-        .catch(err => { res.send(err).end() })
+    if (hashTable.get(uri)) {
+        res.send(hashTable.get(uri))
+    } else {
+       readAPI(uri)
+            .then(data => {
+                hashTable.set(uri, data)
+                res.send(data).end()
+            })
+            .catch(err => { res.send(ERROR_CODE[1]) }) 
+    }
+    
         
 }

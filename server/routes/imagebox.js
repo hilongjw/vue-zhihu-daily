@@ -5,6 +5,7 @@ const http         = require('http')
 const https        = require('https')
 const fs           = require('fs')
 const Stream       = require('stream').Transform
+const HashTable    = require('../util').HashTable
 
 const AV = leancloud.AV
 
@@ -103,29 +104,7 @@ const download = function (uri) {
     return promise
 }
 
-const HashTable = {
-    data: {},
-    set (key, val) {
-        if (Object.keys(this.data).length > 1000) {
-            this.refresh()
-        }
-        this.data[key] = val
-    },
-    get (key) {
-        if (this.data[key]) {
-            return this.data[key]
-        }
-        return null
-    },
-    refresh () {
-        let keys = Object.keys(this.data)
-        let len = keys.length
-        while (len) {
-            len--
-            delete this.data[keys[len]]
-        }
-    }
-}
+const hashTable = new HashTable(1000) 
 
 module.exports.upload = function(req, res) {
     let type = req.query.type
@@ -144,23 +123,21 @@ module.exports.upload = function(req, res) {
         default:
             uri = req.query.data.split('').reverse().join('')
     }
-    if (HashTable.get(uri)) {
-        console.log('from hash')
+    if (hashTable.get(uri)) {
         return res.send({
             code: 200,
             data: {
-                url: HashTable.get(uri)
+                url: hashTable.get(uri)
             }
         })
     } else {
-        console.log('not yet')
         let query = new AV.Query('_File')
         query
             .equalTo('name', uri)
             .first()
             .then(file => {
                 if(file) {
-                    HashTable.set(uri, file.get('url'))
+                    hashTable.set(uri, file.get('url'))
                     return res.send({
                         code: 200,
                         data: {
@@ -175,7 +152,7 @@ module.exports.upload = function(req, res) {
                         return file.save()
                     })
                     .then(function(obj) {
-                        HashTable.set(uri, obj.url())
+                        hashTable.set(uri, obj.url())
                         return res.send({
                             code: 200,
                             data: {
