@@ -64,7 +64,7 @@
 </style>
 
 <template>
-    <article class="card-item" v-link="{'name': 'news', params: {id: data.id}}" :class="{'no-img': cloudSrc === 'waiting'}">
+    <article class="card-item" v-link="{'name': 'news', params: {id: data.id}}" :class="{'no-img': noImg}">
         <div class="card-preview" :style="{'background-image': 'url('+ cloudSrc +')'}"></div>
         <p class="card-title">{{data.name}}</p>
         <p class="card-description">{{data.description}}</p>
@@ -72,6 +72,7 @@
 </template>
 
 <script>
+    import { WAIT_IMG } from '../../util'
     export default {
         props: {
             data: {
@@ -81,30 +82,16 @@
         },
         data () {
             return {
-                cloudSrc: 'waiting'
+                noImg: true,
+                cloudSrc: WAIT_IMG
             }
         },
         created () {
             if (this.data.img) {
                 this.$covImg(this, this.data.img, cloudSrc => {
                     this.cloudSrc = cloudSrc
+                    this.noImg = false
                 })
-            }
-        },
-        methods: {
-            imgCloud (uri, callback) {
-                let data = window.btoa(uri.split('').reverse().join(''))
-                this.$http.get('http://127.0.0.1:88/imagebox?type=rev-64&data=' + data)
-                    .then(response => {
-                        if (response.data.code === 200) {
-                            callback(response.data.data.url)
-                        } else {
-                            console.log(response.data.message)
-                        }
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
             }
         }
     }

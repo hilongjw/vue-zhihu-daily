@@ -51,7 +51,7 @@
 <template>
     <article class="news-item">
         <div class="news-content">
-            <div v-if="coverImage" class="news-cover" :style="{'background-image': 'url('+ coverImage +')'}">
+            <div v-if="hasCoverImage" class="news-cover" :style="{'background-image': 'url('+ coverImage +')'}">
                 <p class="news-title">{{news.title}}</p>
                 <span class="news-cover-source">{{news.image_source}}</span>
             </div>
@@ -61,10 +61,12 @@
 </template>
 
 <script>
+    import { WAIT_IMG } from '../../util'
     export default {
         data () {
             return {
-                coverImage: '',
+                hasCoverImage: false,
+                coverImage: WAIT_IMG,
                 news: {}
             }
         },
@@ -72,6 +74,19 @@
             this.fetchNews(this.$route.params.id)
         },
         methods: {
+            newsContent (body) {
+                const imgReg = /<img\s[^>]*?src\s*=\s*['\"]([^'\"]*?)['\"][^>]*?>/g
+                const srcReg = /htt(p|ps):\/\/.*?(png|jpg|jpeg|gif|webp|svg)/
+                const imgs = body.match(imgReg)
+                imgs.forEach(img => {
+                    let imgSrc = img.match(srcReg)[0]
+                    this.$covImg(this, imgSrc, cloudSrc => {
+                        body = body.replace(imgSrc, cloudSrc)
+                    })
+                })
+
+                return body
+            },
             loadImg () {
                 let imgs = this.$el.getElementsByTagName('img')
                 for (let img of imgs) {
@@ -86,9 +101,10 @@
                 this.$http.get(this.$Api(`http://news-at.zhihu.com/api/4/news/${id}`))
                     .then(response => {
                         this.news = response.data
-                        if (this.news.image) {
-                            this.$covImg(this, this.news.image, cloudSrc => {
+                        if (this.news.images && this.news.images.length) {
+                            this.$covImg(this, this.news.images[0], cloudSrc => {
                                 this.coverImage = cloudSrc
+                                this.hasCoverImage = true
                             })
                         }
                         this.$nextTick(this.loadImg)

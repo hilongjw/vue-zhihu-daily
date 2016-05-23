@@ -52,11 +52,11 @@
     <article class="list-item" v-link="{'name': 'news', params: {id: data.id}}">
         <div class="item-preview" :style="{'background-image': 'url('+ cloudSrc +')'}"></div>
         <p class="item-title">{{data.title}}</p>
-        <p v-if="data.type === '233'" class="item-description">了解自己和别人，了解彼此的欲望和局限。</p>
     </article>
 </template>
 
 <script>
+    import { WAIT_IMG } from '../../util'
     export default {
         props: {
             data: {
@@ -66,7 +66,7 @@
         },
         data () {
             return {
-                cloudSrc: 'waiting'
+                cloudSrc: WAIT_IMG
             }
         },
         created () {

@@ -32,7 +32,6 @@ Vue.prototype.$covImg = (self, uri, callback) => {
         .then(response => {
             if (response.data.code === 200) {
                 IMG_MAP.set(uri, response.data.data.url)
-
                 callback(response.data.data.url)
             } else {
                 console.log(response.data.message)

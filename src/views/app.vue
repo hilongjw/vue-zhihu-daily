@@ -1,9 +1,9 @@
 <template>
     <div class="container">
         <nav class="cov-nav">
-            <div class="nav-tab" @click="touchNav" v-link="{'name': 'index'}">首页</div>
-            <div class="nav-tab" @click="touchNav" v-link="{'name': 'themes'}">主题日报</div>
-            <div class="nav-tab" @click="touchNav" v-link="{'name': 'about'}">关于</div>
+            <div class="nav-tab" @click="navRoute($event, 'index')">首页</div>
+            <div class="nav-tab" @click="navRoute($event, 'themes')">主题日报</div>
+            <div class="nav-tab" @click="navRoute($event, 'about')">关于</div>
             <div class="nav-rail">
                 <span class="nav-moving" :style="covNav.moving"></span>
             </div>
@@ -51,6 +51,11 @@ export default {
         this.initNav()
     },
     methods: {
+        navRoute (e, name) {
+            this.touchNav(e, () => {
+                this.$route.router.go({name: name})
+            })
+        },
         initNav () {
             let x = document.getElementsByClassName('nav-tab')[0].clientWidth * 0.5
             this.covNav.moving = {
@@ -65,7 +70,7 @@ export default {
                 transform: `translateX(${x - w}px)`
             }
         },
-        touchNav (e) {
+        touchNav (e, after) {
             let parent = e.path[1]
             let count = 1
             for (let node of parent.getElementsByClassName('nav-tab')) {
@@ -82,6 +87,7 @@ export default {
                         width: '8px',
                         transform: `translateX(${x}px)`
                     }
+                    after().bind(this)
                 }, 100)
             })
         }
