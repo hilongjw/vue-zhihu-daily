@@ -71,7 +71,7 @@ export default {
             }
         },
         touchNav (e, after) {
-            let parent = e.path[1]
+            let parent = e.target.parentNode || e.path[1]
             let count = 1
             for (let node of parent.getElementsByClassName('nav-tab')) {
                 if (node === e.target) {
