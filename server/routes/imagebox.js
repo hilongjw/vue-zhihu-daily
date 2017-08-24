@@ -3,7 +3,6 @@
 const leancloud    = require('../config')
 const http         = require('http')
 const https        = require('https')
-const fs           = require('fs')
 const Stream       = require('stream').Transform
 const HashTable    = require('../util').HashTable
 
@@ -40,7 +39,7 @@ const download = function (uri) {
     let promise = new AV.Promise()
     let filename = uri.match(/(\w+)(\.\w+)+(?!.*(\w+)(\.\w+)+)/g)
 
-    if(!filename) {
+    if (!filename) {
         promise.reject(ERROR_CODE[1])
         return promise
     }
@@ -51,7 +50,7 @@ const download = function (uri) {
 
     if (/^https:\/\//.test(uri)) {
         client = https
-    } else if (!/^http:\/\//.test(uri)){
+    } else if (!/^http:\/\//.test(uri)) {
         promise.reject(ERROR_CODE[1])
         return promise
     }
@@ -63,31 +62,31 @@ const download = function (uri) {
         }
 
         let contentType = response.headers['content-type'].split('/')
-        
-        if(!contentType.length || contentType[0] !== 'image') {
+
+        if (!contentType.length || contentType[0] !== 'image') {
             promise.reject(ERROR_CODE[2])
             return promise
         }
 
-        if(['jpg','png', 'gif', 'jpeg', 'webp', 'svg'].indexOf(contentType[1]) === -1) {
+        if (['jpg', 'png', 'gif', 'jpeg', 'webp', 'svg'].indexOf(contentType[1]) === -1) {
             promise.reject(ERROR_CODE[3])
             return promise
         }
 
-        if (response.headers['content-length'] > 10*1024*1024) {
+        if (response.headers['content-length'] > 10 * 1024 * 1024) {
             promise.reject(ERROR_CODE[4])
             return promise
         }
 
         let data = new Stream()
-        
+
         response.on('data', function (chunk) {
             data.push(chunk)
-        })  
+        })
 
         response.on('error', function () {
             promise.reject(ERROR_CODE[5])
-        })                                     
+        })                                
 
         response.on('end', function () {
             promise.resolve(filename, data)
@@ -95,33 +94,33 @@ const download = function (uri) {
     }
 
     let request = client.request(uri)
-        request.end()
-        request.setTimeout(10000, function () { 
-            promise.reject(ERROR_CODE[6])
-        })
-        request.on('response', readFile)
+    request.end()
+    request.setTimeout(10000, function () {
+        promise.reject(ERROR_CODE[6])
+    })
+    request.on('response', readFile)
 
     return promise
 }
 
-const hashTable = new HashTable(1000) 
+const hashTable = new HashTable(1000)
 
-module.exports.upload = function(req, res) {
+module.exports.upload = function (req, res) {
     let type = req.query.type
     let uri
 
     switch (type) {
-        case 'reverse' :
-            uri = req.query.data.split('').reverse().join('')
-            break;
-        case 'rev-64':
-             uri = (new Buffer(req.query.data, 'base64').toString('ascii')).split('').reverse().join('')
-             break;
-        case '64':
-            uri = new Buffer(req.query.data, 'base64').toString('ascii')
-            break;
-        default:
-            uri = req.query.data.split('').reverse().join('')
+    case 'reverse' :
+        uri = req.query.data.split('').reverse().join('')
+        break
+    case 'rev-64':
+        uri = (new Buffer(req.query.data, 'base64').toString('ascii')).split('').reverse().join('')
+        break
+    case '64':
+        uri = new Buffer(req.query.data, 'base64').toString('ascii')
+        break
+    default:
+        uri = req.query.data.split('').reverse().join('')
     }
     if (hashTable.get(uri)) {
         return res.send({
@@ -136,7 +135,7 @@ module.exports.upload = function(req, res) {
             .equalTo('name', uri)
             .first()
             .then(file => {
-                if(file) {
+                if (file) {
                     hashTable.set(uri, file.get('url'))
                     return res.send({
                         code: 200,
@@ -161,14 +160,15 @@ module.exports.upload = function(req, res) {
                             }
                         }).end()
                     })
-                    .catch(function (err) {
+                    .catch(err => {
+                        console.error(err)
                         return res.send(ERROR_CODE[1]).end()
                     })
                 }
             })
-            .catch(function (err) {
+            .catch(err => {
+                console.error(err)
                 res.send(ERROR_CODE[1])
             })
     }
-    
 }

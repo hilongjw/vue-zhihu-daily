@@ -13,16 +13,16 @@ const state = {
 }
 
 const mutations = {
-    ['SET_ARTICLES'] (state, date, arr) {
+    SET_ARTICLES (state, date, arr) {
         state.days.push({
             date: date,
             articles: arr
         })
     },
-    ['SET_DATE_POINTER'] (state, value) {
+    SET_DATE_POINTER (state, value) {
         state.datePointer = value
     },
-    ['SET_THEMES'] (state, arr) {
+    SET_THEMES (state, arr) {
         state.themes = arr
     }
 }

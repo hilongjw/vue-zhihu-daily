@@ -75,7 +75,7 @@
         },
         methods: {
             newsContent (body) {
-                const imgReg = /<img\s[^>]*?src\s*=\s*['\"]([^'\"]*?)['\"][^>]*?>/g
+                const imgReg = /<img\s[^>]*?src\s*=\s*['"]([^'"]*?)['"][^>]*?>/g
                 const srcReg = /htt(p|ps):\/\/.*?(png|jpg|jpeg|gif|webp|svg)/
                 const imgs = body.match(imgReg)
                 imgs.forEach(img => {

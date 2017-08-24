@@ -1,8 +1,8 @@
 const AV = require('leanengine')
 
 const config = {
-    appId: 'dpeFsmm4JIVgnmQP0tizLCcO-gzGzoHsz',
-    appKey: '2ph8iVVCL1TtNjKNCUG8TtKn'
+    appId: 'iNKea3geGtJ1XIk7jmNKCw5O-gzGzoHsz',
+    appKey: 'JnHcoPkcnmyQNhHyzNyY0pUR'
 }
 
 AV.initialize(config.appId, config.appKey)
