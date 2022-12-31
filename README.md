@@ -1,4 +1,4 @@
-# 知乎日报 with Vuejs
+#知乎日报 with Vuejs
 
 > A Vue.js & Nodejs project
 
